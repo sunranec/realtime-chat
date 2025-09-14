@@ -4,7 +4,7 @@ const path = require("path");
 const WebSocket = require("ws");
 const bodyParser = require("body-parser");
 const { Pool } = require("pg");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || "postgres://chat_db_8f7z_user:lzkcXUHc5BcxwaD9J9byn42fWYKLT3T3@dpg-d33bo4ripnbc73drt900-a.oregon-postgres.render.com:5432/chat_db_8f7z",
