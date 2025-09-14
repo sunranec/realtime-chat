@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Realtime Chat</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="chat-page">
+  <!-- Боковая панель с пользователями -->
+  <div class="sidebar">
+    <h3>Online Users</h3>
+    <ul id="userList"></ul>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <!-- Основное окно чата -->
+  <div class="chat-container">
+    <div class="messages" id="messages"></div>
+    <form id="chatForm">
+      <input id="message" autocomplete="off" placeholder="Type a message...">
+      <button>Send</button>
+    </form>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
