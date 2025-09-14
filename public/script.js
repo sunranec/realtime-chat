@@ -1,33 +1,5 @@
 let ws;
-let currentUser = null;
-
-// Логин
-function login() {
-  const user = document.getElementById("username").value.trim();
-  const pass = document.getElementById("password").value.trim();
-
-  if (user && pass) {
-    localStorage.setItem("user", user);
-    currentUser = user;
-    window.location.href = "/chat.html";
-  } else {
-    document.getElementById("authMsg").innerText = "Enter username & password";
-  }
-}
-
-// Регистрация (фейковая, в БД уходит через сервер)
-function register() {
-  const user = document.getElementById("username").value.trim();
-  const pass = document.getElementById("password").value.trim();
-
-  if (user && pass) {
-    localStorage.setItem("user", user);
-    currentUser = user;
-    window.location.href = "/chat.html";
-  } else {
-    document.getElementById("authMsg").innerText = "Fill all fields";
-  }
-}
+let currentUser = localStorage.getItem("user");
 
 // Выход
 function logout() {
@@ -38,13 +10,11 @@ function logout() {
 
 // Запуск чата
 function startChat() {
-  currentUser = localStorage.getItem("user");
   if (!currentUser) {
     window.location.href = "/";
     return;
   }
 
-  // выбираем правильный протокол
   const protocol = window.location.protocol === "https:" ? "wss" : "ws";
   ws = new WebSocket(`${protocol}://${window.location.host}`);
 
@@ -69,17 +39,30 @@ function startChat() {
   };
 
   const form = document.getElementById("chatForm");
+  const input = document.getElementById("message");
+
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const input = document.getElementById("message");
+    sendMessage();
+  });
+
+  // Отправка при Enter, перенос строки при Shift+Enter
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  function sendMessage() {
     if (input.value.trim() !== "") {
       ws.send(JSON.stringify({ type: "message", user: currentUser, text: input.value }));
       input.value = "";
     }
-  });
+  }
 }
 
-// Добавить сообщение в чат
+// Добавить сообщение
 function addMessage(user, text, time) {
   const messages = document.getElementById("messages");
   if (!messages) return;
@@ -108,7 +91,6 @@ function addMessage(user, text, time) {
   messages.scrollTop = messages.scrollHeight;
 }
 
-// Формат времени
 function formatTime(time) {
   if (!time) return "";
   const d = new Date(time);
@@ -130,7 +112,34 @@ function updateUserList(users) {
   });
 }
 
-// Автозапуск при заходе на chat.html
+// Работа со смайлами
+function toggleEmojiPicker() {
+  const picker = document.getElementById("emojiPicker");
+  picker.style.display = picker.style.display === "block" ? "none" : "block";
+}
+
+document.addEventListener("click", (event) => {
+  const picker = document.getElementById("emojiPicker");
+  const button = document.querySelector(".emoji-btn");
+  if (picker && picker.style.display === "block" && !picker.contains(event.target) && !button.contains(event.target)) {
+    picker.style.display = "none";
+  }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const picker = document.getElementById("emojiPicker");
+  if (picker) {
+    picker.querySelectorAll("span, div").forEach(el => {
+      el.addEventListener("click", () => {
+        const input = document.getElementById("message");
+        input.value += el.textContent;
+        input.focus();
+      });
+    });
+  }
+});
+
+// Автозапуск чата
 if (window.location.pathname.endsWith("chat.html")) {
   window.onload = startChat;
 }

@@ -1,24 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Realtime Chat</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body class="chat-page">
-  <!-- Боковая панель с пользователями -->
+<body>
+  <!-- Сайдбар с юзерами -->
   <div class="sidebar">
     <h3>Online Users</h3>
     <ul id="userList"></ul>
     <button onclick="logout()">Logout</button>
   </div>
 
-  <!-- Основное окно чата -->
+  <!-- Основной чат -->
   <div class="chat-container">
     <div class="messages" id="messages"></div>
+
     <form id="chatForm">
-      <input id="message" autocomplete="off" placeholder="Type a message...">
-      <button>Send</button>
+      <div class="emoji-picker-container">
+        <button type="button" class="emoji-btn" onclick="toggleEmojiPicker()">😊</button>
+        <div id="emojiPicker" class="emoji-picker">
+          😀 😃 😄 😁 😆 😅 😂 🤣 😊 😇 🙂 🙃 😉 😍 😘 😗 😋 😜 🤪 🤨 🤔 😎 🤩 🥳 😏 😒 😞 😔 😢 😭 😤 😡 🤬
+          ❤️ 💔 💕 💖 💗 💙 💚 💛 💜 🖤 🤍
+          👍 👎 👊 ✊ 🤛 🤜 👏 🙌 👐 🤲 🤝 🙏 ✌️ 🤞 🤟 🤘 🤙
+          🔥 🌟 💯 🎉 🎊 🌹 🌸 🌺 🌻 🌼 🌷 🌈 ☀️ 🌙 ⭐
+          🐶 🐱 🐭 🐹 🐰 🦊 🐻 🐼 🐨 🐯 🦁 🐮 🐷 🐸 🐵
+        </div>
+      </div>
+      <input id="message" autocomplete="off" placeholder="Type a message..." />
+      <button type="submit">➤</button>
     </form>
   </div>
 
