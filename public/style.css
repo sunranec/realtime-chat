@@ -2,165 +2,111 @@ body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: #ece5dd;
+}
+
+.chat-wrapper {
   display: flex;
   height: 100vh;
 }
 
-/* Сайдбар */
 .sidebar {
   width: 250px;
   background: #075e54;
   color: white;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
+  padding: 15px;
 }
 
 .sidebar h3 {
   margin-top: 0;
 }
 
-#userList {
+.sidebar ul {
   list-style: none;
   padding: 0;
-  margin: 0;
 }
 
-#userList li {
-  padding: 8px;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
+.sidebar li {
+  padding: 5px;
+  border-bottom: 1px solid #0b7767;
 }
 
-/* Чат */
 .chat-container {
   flex: 1;
   display: flex;
   flex-direction: column;
   background: #fff;
-  padding: 20px;
-  margin-left: 20px;
 }
 
 .messages {
   flex: 1;
+  padding: 15px;
   overflow-y: auto;
-  padding-right: 10px;
+  background: #efeae2;
 }
 
-/* Сообщения */
 .message {
+  margin: 10px 0;
   max-width: 60%;
-  margin-bottom: 16px;
-  padding: 8px 12px 16px;
-  border-radius: 10px;
+  padding: 8px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
   position: relative;
-  word-wrap: break-word;
 }
 
 .message.me {
-  background: #dcf8c6;
   margin-left: auto;
-  text-align: left;
-}
-
-.message.other {
-  background: #f1f1f1;
-  margin-right: auto;
-  text-align: left;
+  background: #dcf8c6;
 }
 
 .msg-user {
-  display: block;
-  font-size: 12px;
   font-weight: bold;
-  color: #075e54;
-  margin-bottom: 4px;
-}
-
-.msg-text {
   display: block;
-  font-size: 15px;
-  margin-bottom: 3px;
 }
 
 .msg-time {
-  font-size: 11px;
+  font-size: 0.75em;
   color: gray;
-  position: absolute;
-  bottom: 3px;
-  right: 8px;
+  text-align: right;
 }
 
-/* Форма */
-form#chatForm {
+.chat-input {
   display: flex;
   align-items: center;
-  border-top: 1px solid #ddd;
   padding: 10px;
   background: #f0f0f0;
 }
 
-form#chatForm input {
+.chat-input textarea {
   flex: 1;
-  padding: 10px;
-  border-radius: 20px;
+  resize: none;
+  padding: 8px;
+  border-radius: 5px;
   border: 1px solid #ccc;
-  margin-right: 8px;
-  outline: none;
 }
 
-form#chatForm button {
-  background: #128c7e;
+.send-btn {
+  margin-left: 10px;
+  background: #075e54;
   color: white;
   border: none;
-  padding: 10px 16px;
+  padding: 10px 15px;
   border-radius: 50%;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-form#chatForm button:hover {
-  background: #075e54;
-}
-
-/* Панель смайлов */
-.emoji-picker-container {
-  position: relative;
-}
-
-.emoji-btn {
-  background: transparent;
-  border: none;
-  font-size: 20px;
-  margin-right: 8px;
   cursor: pointer;
 }
 
 .emoji-picker {
   display: none;
   position: absolute;
-  bottom: 40px;
-  left: 0;
+  bottom: 60px;
   background: #fff;
   border: 1px solid #ccc;
   border-radius: 10px;
   padding: 8px;
-  width: 280px;
-  height: 200px;
+  width: 250px;
+  max-height: 150px;
   overflow-y: auto;
   font-size: 20px;
   line-height: 1.5;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  z-index: 1000;
-}
-
-.emoji-picker span,
-.emoji-picker div {
-  cursor: pointer;
-  display: inline-block;
-  padding: 4px;
-}
-.emoji-picker span:hover {
-  background: #f0f0f0;
-  border-radius: 5px;
 }
