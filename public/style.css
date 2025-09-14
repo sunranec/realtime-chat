@@ -64,9 +64,15 @@ body {
   display: block;
 }
 
+.msg-text {
+  display: block;
+  margin-bottom: 4px;
+}
+
 .msg-time {
   font-size: 0.75em;
   color: gray;
+  display: block;
   text-align: right;
 }
 
@@ -75,6 +81,7 @@ body {
   align-items: center;
   padding: 10px;
   background: #f0f0f0;
+  position: relative;
 }
 
 .chat-input textarea {
@@ -92,6 +99,14 @@ body {
   border: none;
   padding: 10px 15px;
   border-radius: 50%;
+  cursor: pointer;
+}
+
+.emoji-btn {
+  margin-right: 10px;
+  font-size: 20px;
+  background: transparent;
+  border: none;
   cursor: pointer;
 }
 

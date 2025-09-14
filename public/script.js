@@ -46,7 +46,6 @@ function startChat() {
     sendMessage();
   });
 
-  // Отправка при Enter, перенос строки при Shift+Enter
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -139,7 +138,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Автозапуск чата
 if (window.location.pathname.endsWith("chat.html")) {
   window.onload = startChat;
 }

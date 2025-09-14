@@ -1,8 +1,8 @@
--- Удаляем таблицы, если уже существуют
+-- Удаляем старые таблицы, если они есть
 DROP TABLE IF EXISTS messages CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
--- Создаем таблицу пользователей
+-- Таблица пользователей
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Создаем таблицу сообщений
+-- Таблица сообщений
 CREATE TABLE messages (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
