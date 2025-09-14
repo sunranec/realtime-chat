@@ -45,7 +45,7 @@ function startChat() {
   currentUser = localStorage.getItem("user");
   if(!currentUser){ window.location.href="index.html"; return; }
 
-  ws = new WebSocket(`ws://${window.location.host}`);
+  ws = new const protocol = window.location.protocol === "https:" ? "wss" : "ws";(`ws://${window.location.host}`);
   ws.onopen = () => {
     ws.send(JSON.stringify({ type:"join", user:currentUser }));
   };
