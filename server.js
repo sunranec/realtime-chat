@@ -14,14 +14,11 @@ app.use(express.static(path.join(__dirname, "public")));
 let users = {};       // активные пользователи {username: ws}
 let messages = [];    // история сообщений
 
-// ===== API для логина/регистрации (имитация без БД) =====
+// ===== API для логина/регистрации (простая имитация) =====
 app.post("/register", (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
     return res.json({ success: false, error: "Fill all fields" });
-  }
-  if (users[username]) {
-    return res.json({ success: false, error: "User already online" });
   }
   return res.json({ success: true });
 });
@@ -46,21 +43,27 @@ wss.on("connection", (ws) => {
         currentUser = data.user;
         users[currentUser] = ws;
 
-        // отправляем список онлайн
+        // обновляем список онлайн юзеров
         broadcast({ type: "users", users: Object.keys(users) });
 
-        // отправляем историю новому пользователю
+        // отправляем историю сообщений новому юзеру
         ws.send(JSON.stringify({ type: "history", messages }));
+
+        // Сообщение о новом юзере
+        broadcast({
+          type: "message",
+          user: null,
+          text: `🔔 ${currentUser} joined the chat`,
+          time: new Date().toLocaleTimeString()
+        });
       }
 
       if (data.type === "message") {
         const newMsg = {
           user: data.user,
-          text: data.text || null,   // 👈 текст (если есть)
-          image: data.image || null, // 👈 картинка (если есть)
+          text: data.text,
           time: data.time,
         };
-
         messages.push(newMsg);
 
         // рассылаем всем
@@ -75,6 +78,14 @@ wss.on("connection", (ws) => {
     if (currentUser) {
       delete users[currentUser];
       broadcast({ type: "users", users: Object.keys(users) });
+
+      // сообщение о выходе
+      broadcast({
+        type: "message",
+        user: null,
+        text: `👋 ${currentUser} left the chat`,
+        time: new Date().toLocaleTimeString()
+      });
     }
   });
 });
