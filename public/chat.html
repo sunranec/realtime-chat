@@ -2,32 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Realtime Chat</title>
+  <title>Chat</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="chat-container">
-    <!-- Левая панель -->
-    <div class="users">
-      <h3>Online Users</h3>
-      <ul id="userList"></ul>
-    </div>
+<div class="chat-container">
+  <aside class="sidebar">
+    <h3>Online Users</h3>
+    <ul id="userList"></ul>
+  </aside>
 
-    <!-- Правая часть (чат) -->
-    <div class="chat">
-      <h2>
-        <img src="https://img.icons8.com/color/48/chat.png" alt="chat">
-        Realtime Chat
-      </h2>
-      <div id="messages" class="messages"></div>
-
-      <form id="chatForm">
-        <input id="message" autocomplete="off" placeholder="Type a message..." />
-        <button type="submit">➤</button>
-      </form>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+  <main class="chat-box">
+    <div id="messages" class="messages"></div>
+    <form id="chatForm">
+      <input id="message" placeholder="Type a message..." autocomplete="off" />
+      <button type="button" id="emojiBtn">😊</button>
+      <input type="file" id="fileInput" accept="image/*" hidden />
+      <button type="button" id="uploadBtn">📷</button>
+      <button type="submit">Send</button>
+    </form>
+    <div id="emojiPanel" class="emoji-panel"></div>
+  </main>
+</div>
+<script src="script.js"></script>
 </body>
 </html>
