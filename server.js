@@ -11,60 +11,66 @@ const wss = new WebSocket.Server({ server });
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-let users = {};    // онлайн пользователи {username: ws}
-let messages = []; // история сообщений
+let users = {};       // {username: ws}
+let messages = [];    // история сообщений
 
-// ====== API ======
+// ===== API Login / Register =====
 app.post("/register", (req, res) => {
   const { username, password } = req.body;
-  if (!username || !password) {
-    return res.json({ success: false, error: "Fill all fields" });
-  }
+  if (!username || !password) return res.json({ success: false, error: "Fill all fields" });
   return res.json({ success: true });
 });
 
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
-  if (!username || !password) {
-    return res.json({ success: false, error: "Fill all fields" });
-  }
+  if (!username || !password) return res.json({ success: false, error: "Fill all fields" });
   return res.json({ success: true });
 });
 
-// ====== WebSocket ======
+// ===== WebSocket =====
 wss.on("connection", (ws) => {
   let currentUser = null;
 
   ws.on("message", (msg) => {
-    const data = JSON.parse(msg);
+    try {
+      const data = JSON.parse(msg);
 
-    if (data.type === "join") {
-      currentUser = data.user;
-      users[currentUser] = ws;
+      if (data.type === "join") {
+        currentUser = data.user;
+        users[currentUser] = ws;
 
-      // история
-      ws.send(JSON.stringify({ type: "history", messages }));
+        broadcast({ type: "users", users: Object.keys(users) });
 
-      // обновление юзеров
-      broadcast({ type: "users", users: Object.keys(users) });
+        ws.send(JSON.stringify({ type: "history", messages }));
 
-      // уведомление
-      broadcast({
-        type: "message",
-        user: null,
-        text: `🔔 ${currentUser} joined`,
-        time: new Date().toLocaleTimeString()
-      });
-    }
+        broadcast({
+          type: "system",
+          text: `🔔 ${currentUser} joined the chat`,
+          time: new Date().toLocaleTimeString()
+        });
+      }
 
-    if (data.type === "message") {
-      const newMsg = {
-        user: data.user,
-        text: data.text,
-        time: data.time,
-      };
-      messages.push(newMsg);
-      broadcast({ type: "message", ...newMsg });
+      if (data.type === "message") {
+        const newMsg = {
+          user: data.user,
+          text: data.text,
+          time: new Date().toLocaleTimeString()
+        };
+        messages.push(newMsg);
+        broadcast({ type: "message", ...newMsg });
+      }
+
+      if (data.type === "image") {
+        const newMsg = {
+          user: data.user,
+          image: data.image,
+          time: new Date().toLocaleTimeString()
+        };
+        messages.push(newMsg);
+        broadcast({ type: "image", ...newMsg });
+      }
+    } catch (e) {
+      console.error("❌ Ошибка:", e);
     }
   });
 
@@ -72,10 +78,10 @@ wss.on("connection", (ws) => {
     if (currentUser) {
       delete users[currentUser];
       broadcast({ type: "users", users: Object.keys(users) });
+
       broadcast({
-        type: "message",
-        user: null,
-        text: `👋 ${currentUser} left`,
+        type: "system",
+        text: `👋 ${currentUser} left the chat`,
         time: new Date().toLocaleTimeString()
       });
     }
@@ -85,11 +91,9 @@ wss.on("connection", (ws) => {
 function broadcast(data) {
   const json = JSON.stringify(data);
   wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(json);
-    }
+    if (client.readyState === WebSocket.OPEN) client.send(json);
   });
 }
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log(`🚀 Server http://localhost:${PORT}`));
+server.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
