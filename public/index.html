@@ -10,10 +10,17 @@
     <h2>Welcome to Realtime Chat</h2>
     <input id="username" placeholder="Username" />
     <input id="password" type="password" placeholder="Password" />
-    <button onclick="login()">Login</button>
-    <button onclick="register()">Register</button>
+    <button id="loginBtn">Login</button>
+    <button id="registerBtn">Register</button>
     <p id="authMsg" style="color:red;"></p>
   </div>
+
+  <!-- Подключаем скрипт -->
   <script src="script.js"></script>
+  <script>
+    // Привязываем кнопки к функциям
+    document.getElementById("loginBtn").addEventListener("click", login);
+    document.getElementById("registerBtn").addEventListener("click", register);
+  </script>
 </body>
 </html>
