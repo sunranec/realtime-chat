@@ -1,9 +1,10 @@
 let ws;
 let currentUser = localStorage.getItem("user");
 
-// ===== подключение к WebSocket =====
+// ===== Автоматический выбор протокола =====
 function connectWS() {
-  ws = new WebSocket(`wss://${window.location.host}`);
+  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+  ws = new WebSocket(`${protocol}://${window.location.host}`);
 
   ws.onopen = () => {
     console.log("✅ Connected to server");
@@ -28,7 +29,7 @@ function connectWS() {
   };
 }
 
-// ===== отрисовка сообщения =====
+// ===== Отрисовка сообщения =====
 function addMessage(msg) {
   const messages = document.getElementById("messages");
   const div = document.createElement("div");
@@ -46,7 +47,7 @@ function addMessage(msg) {
   messages.scrollTop = messages.scrollHeight;
 }
 
-// ===== список юзеров =====
+// ===== Список юзеров =====
 function updateUsers(users) {
   const list = document.getElementById("userList");
   list.innerHTML = "";
@@ -60,7 +61,7 @@ function updateUsers(users) {
   });
 }
 
-// ===== отправка формы =====
+// ===== Отправка формы =====
 document.getElementById("chatForm")?.addEventListener("submit", function(e) {
   e.preventDefault();
   const input = document.getElementById("message");
@@ -76,7 +77,7 @@ document.getElementById("chatForm")?.addEventListener("submit", function(e) {
   }
 });
 
-// ===== подключаем WebSocket только если юзер есть =====
+// ===== Подключаемся, если юзер авторизован =====
 if (currentUser) {
   connectWS();
 }
