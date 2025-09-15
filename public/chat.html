@@ -1,30 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Realtime Chat</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
-<body onload="startChat()">
-  <div class="chat-wrapper">
-    <div class="sidebar">
+<body>
+  <div class="chat-container">
+    <!-- Левая панель -->
+    <div class="users">
       <h3>Online Users</h3>
       <ul id="userList"></ul>
     </div>
-    <div class="chat-container">
-      <div class="messages" id="messages"></div>
-      <form id="chatForm" class="chat-input">
-        <button type="button" id="emojiBtn" class="emoji-btn">😊</button>
-        <textarea id="message" placeholder="Type a message..."></textarea>
-        <button type="submit" class="send-btn">➤</button>
+
+    <!-- Правая часть (чат) -->
+    <div class="chat">
+      <h2>
+        <img src="https://img.icons8.com/color/48/chat.png" alt="chat">
+        Realtime Chat
+      </h2>
+      <div id="messages" class="messages"></div>
+
+      <form id="chatForm">
+        <input id="message" autocomplete="off" placeholder="Type a message..." />
+        <button type="submit">➤</button>
       </form>
-      <div class="emoji-picker" id="emojiPicker">
-        <span>😀</span><span>😁</span><span>😂</span><span>🤣</span><span>😊</span>
-        <span>😍</span><span>😘</span><span>😎</span><span>😭</span><span>😡</span>
-        <span>👍</span><span>🙏</span><span>🔥</span><span>💯</span><span>🎉</span>
-      </div>
     </div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>

@@ -1,42 +1,82 @@
-// ===== ЛОГИН =====
-async function login() {
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
+let ws;
+let currentUser = localStorage.getItem("user");
 
-  const res = await fetch("/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password })
-  });
+// ===== подключение к WebSocket =====
+function connectWS() {
+  ws = new WebSocket(`wss://${window.location.host}`);
 
-  const data = await res.json();
-  if (data.success) {
-    localStorage.setItem("user", username);
-    window.location.href = "/chat.html";
-  } else {
-    document.getElementById("authMsg").innerText = data.error || "Login failed";
-  }
+  ws.onopen = () => {
+    console.log("✅ Connected to server");
+    ws.send(JSON.stringify({ type: "join", user: currentUser }));
+  };
+
+  ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+
+    if (data.type === "history") {
+      document.getElementById("messages").innerHTML = "";
+      data.messages.forEach(addMessage);
+    }
+
+    if (data.type === "message") {
+      addMessage(data);
+    }
+
+    if (data.type === "users") {
+      updateUsers(data.users);
+    }
+  };
 }
 
-// ===== РЕГИСТРАЦИЯ =====
-async function register() {
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
+// ===== отрисовка сообщения =====
+function addMessage(msg) {
+  const messages = document.getElementById("messages");
+  const div = document.createElement("div");
 
-  const res = await fetch("/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password })
-  });
+  div.classList.add("message");
+  if (msg.user === currentUser) div.classList.add("me");
 
-  const data = await res.json();
-  if (data.success) {
-    alert("✅ Registration successful, now login!");
-  } else {
-    document.getElementById("authMsg").innerText = data.error || "Registration failed";
-  }
+  div.innerHTML = `
+    <span class="msg-user">${msg.user}</span>
+    <span class="msg-text">${msg.text}</span>
+    <span class="msg-time">${msg.time}</span>
+  `;
+
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
 }
 
-// ===== Привязка кнопок =====
-document.getElementById("loginBtn")?.addEventListener("click", login);
-document.getElementById("registerBtn")?.addEventListener("click", register);
+// ===== список юзеров =====
+function updateUsers(users) {
+  const list = document.getElementById("userList");
+  list.innerHTML = "";
+  users.forEach(u => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <img src="https://api.dicebear.com/7.x/identicon/svg?seed=${u}" alt="avatar">
+      <span>${u}</span>
+    `;
+    list.appendChild(li);
+  });
+}
+
+// ===== отправка формы =====
+document.getElementById("chatForm")?.addEventListener("submit", function(e) {
+  e.preventDefault();
+  const input = document.getElementById("message");
+  if (input.value.trim() !== "") {
+    const msg = {
+      type: "message",
+      user: currentUser,
+      text: input.value,
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    };
+    ws.send(JSON.stringify(msg));
+    input.value = "";
+  }
+});
+
+// ===== подключаем WebSocket только если юзер есть =====
+if (currentUser) {
+  connectWS();
+}
