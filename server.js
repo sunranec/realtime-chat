@@ -14,7 +14,7 @@ app.use(express.static(path.join(__dirname, "public")));
 let users = {};       // активные пользователи {username: ws}
 let messages = [];    // история сообщений
 
-// ===== API для логина/регистрации (простая имитация) =====
+// ===== API для логина/регистрации (имитация) =====
 app.post("/register", (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
@@ -46,7 +46,7 @@ wss.on("connection", (ws) => {
         // обновляем список онлайн юзеров
         broadcast({ type: "users", users: Object.keys(users) });
 
-        // отправляем историю сообщений новому юзеру
+        // отправляем историю новому юзеру
         ws.send(JSON.stringify({ type: "history", messages }));
 
         // Сообщение о новом юзере
@@ -70,7 +70,7 @@ wss.on("connection", (ws) => {
         broadcast({ type: "message", ...newMsg });
       }
     } catch (e) {
-      console.error("❌ Ошибка обработки сообщения:", e);
+      console.error("❌ Ошибка:", e);
     }
   });
 
