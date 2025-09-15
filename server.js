@@ -14,13 +14,12 @@ app.use(express.static(path.join(__dirname, "public")));
 let users = {};       // активные пользователи {username: ws}
 let messages = [];    // история сообщений
 
-// ===== API для логина/регистрации (простая имитация) =====
+// ===== API для логина/регистрации (имитация без БД) =====
 app.post("/register", (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
     return res.json({ success: false, error: "Fill all fields" });
   }
-  // в реальном проекте здесь должна быть база данных
   if (users[username]) {
     return res.json({ success: false, error: "User already online" });
   }
@@ -47,19 +46,21 @@ wss.on("connection", (ws) => {
         currentUser = data.user;
         users[currentUser] = ws;
 
-        // обновляем список онлайн юзеров
+        // отправляем список онлайн
         broadcast({ type: "users", users: Object.keys(users) });
 
-        // отправляем историю сообщений новому юзеру
+        // отправляем историю новому пользователю
         ws.send(JSON.stringify({ type: "history", messages }));
       }
 
       if (data.type === "message") {
         const newMsg = {
           user: data.user,
-          text: data.text,
+          text: data.text || null,   // 👈 текст (если есть)
+          image: data.image || null, // 👈 картинка (если есть)
           time: data.time,
         };
+
         messages.push(newMsg);
 
         // рассылаем всем
