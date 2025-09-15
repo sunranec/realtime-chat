@@ -1,106 +1,89 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #e5ddd5; /* WhatsApp фон */
 }
 
+/* логин */
+.login-body {
+  background: #075E54;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.auth-box {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+}
+
+/* чат */
 .chat-container {
   display: flex;
   height: 100vh;
 }
 
-/* Список пользователей */
 #userList {
-  width: 250px;
+  width: 220px;
   background: #075E54;
   color: white;
-  padding: 15px;
-  box-sizing: border-box;
+  padding: 10px;
 }
-
-#userList h3 {
-  margin-top: 0;
-}
-
-#users {
+#userList ul {
   list-style: none;
   padding: 0;
-  margin: 0;
 }
-
-#users li {
-  padding: 8px;
+#userList li {
+  padding: 6px;
   background: #128C7E;
-  margin-bottom: 5px;
-  border-radius: 5px;
-  cursor: pointer;
+  margin: 4px 0;
+  border-radius: 4px;
 }
-
-#users li:hover {
-  background: #25D366;
-}
-
-/* Logout button */
 #logoutBtn {
   width: 100%;
-  padding: 8px;
   margin-bottom: 10px;
+  padding: 6px;
   background: #d9534f;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
 }
-#logoutBtn:hover {
-  background: #c9302c;
-}
 
-/* Чат */
 #chatBox {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: white;
+  background: #ECE5DD;
 }
-
 #messages {
   flex: 1;
   list-style: none;
-  margin: 0;
-  padding: 20px;
+  padding: 10px;
   overflow-y: auto;
 }
-
 #messages li {
-  margin-bottom: 10px;
+  margin: 6px 0;
+  background: #DCF8C6;
   padding: 8px;
-  background: #dcf8c6;
   border-radius: 5px;
-  max-width: 60%;
 }
-
 #chatForm {
   display: flex;
   padding: 10px;
   background: #f0f0f0;
 }
-
 #chatForm input {
   flex: 1;
   padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
 }
-
 #chatForm button {
   margin-left: 10px;
-  padding: 10px 15px;
+  padding: 10px;
   background: #25D366;
-  border: none;
   color: white;
+  border: none;
   border-radius: 5px;
-  cursor: pointer;
-}
-#chatForm button:hover {
-  background: #128C7E;
 }
