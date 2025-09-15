@@ -2,25 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Chat</title>
+  <title>WhatsApp Chat</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="chat-container">
     <div id="userList">
       <h3>Online Users</h3>
-      <button id="logoutBtn">Logout</button>
       <ul id="users"></ul>
+      <button id="logoutBtn">Logout</button>
     </div>
 
     <div id="chatBox">
       <ul id="messages"></ul>
+      <div class="chat-tools">
+        <input type="file" id="fileInput" hidden>
+        <button onclick="document.getElementById('fileInput').click()">📷</button>
+        <button onclick="toggleEmoji()">😊</button>
+      </div>
       <form id="chatForm">
         <input id="message" placeholder="Type a message..." autocomplete="off">
         <button>Send</button>
       </form>
+      <div id="emojiPicker" class="emoji-picker"></div>
     </div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
