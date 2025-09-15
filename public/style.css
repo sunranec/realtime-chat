@@ -1,9 +1,162 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #ece5dd; /* фон WhatsApp */
+  background: #ece5dd;
 }
 
-/* === ЛОГИН / РЕГИСТРАЦИЯ === */
+.chat-wrapper {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 250px;
+  background: #075e54;
+  color: white;
+  padding: 15px;
+}
+
+.sidebar h3 {
+  margin-top: 0;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 5px;
+  border-bottom: 1px solid #0b7767;
+}
+
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.messages {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  background: #efeae2;
+}
+
+.message {
+  margin: 10px 0;
+  max-width: 60%;
+  padding: 8px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+.message.me {
+  margin-left: auto;
+  background: #dcf8c6;
+}
+
+.msg-user {
+  font-weight: bold;
+  display: block;
+}
+
+.msg-text {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.msg-time {
+  font-size: 0.75em;
+  color: gray;
+  display: block;
+  text-align: right;
+}
+
+.chat-input {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: #f0f0f0;
+  position: relative;
+}
+
+.chat-input textarea {
+  flex: 1;
+  resize: none;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.send-btn {
+  margin-left: 10px;
+  background: #075e54;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.emoji-btn {
+  margin-right: 10px;
+  font-size: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.emoji-picker {
+  display: none;
+  position: absolute;
+  bottom: 60px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 8px;
+  width: 250px;
+  max-height: 150px;
+  overflow-y: auto;
+  font-size: 20px;
+  line-height: 1.5;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* ЛОГИН */
 .auth-box {
   background: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  width: 300px;
+  margin: 100px auto;
+  text-align: center;
+}
+
+.auth-box input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.auth-box button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  background: #075e54;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.auth-box button:hover {
+  background: #0b7767;
+}

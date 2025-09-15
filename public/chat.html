@@ -1,31 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Realtime Chat</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body onload="startChat()">
   <div class="chat-wrapper">
     <div class="sidebar">
       <h3>Online Users</h3>
       <ul id="userList"></ul>
-      <button onclick="logout()">Logout</button>
     </div>
-
     <div class="chat-container">
-      <div id="messages" class="messages"></div>
+      <div class="messages" id="messages"></div>
       <form id="chatForm" class="chat-input">
-        <button type="button" class="emoji-btn" onclick="toggleEmojiPicker()">😊</button>
-        <div id="emojiPicker" class="emoji-picker">
-          😀 😃 😄 😁 😂 🤣 😍 😘 😎 🤩 🥳 😔 😢 😡 ❤️ 💕 💙 💚 👍 👎 👊 ✌️ 🙌 🙏 🔥 🌟 💯 🎉 🌹 🐶 🐱 🐯 🐻 🐼
-        </div>
+        <button type="button" id="emojiBtn" class="emoji-btn">😊</button>
         <textarea id="message" placeholder="Type a message..."></textarea>
         <button type="submit" class="send-btn">➤</button>
       </form>
+      <div class="emoji-picker" id="emojiPicker">
+        <span>😀</span><span>😁</span><span>😂</span><span>🤣</span><span>😊</span>
+        <span>😍</span><span>😘</span><span>😎</span><span>😭</span><span>😡</span>
+        <span>👍</span><span>🙏</span><span>🔥</span><span>💯</span><span>🎉</span>
+      </div>
     </div>
   </div>
-
   <script src="script.js"></script>
 </body>
 </html>
