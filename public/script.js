@@ -1,14 +1,13 @@
 let ws;
-const messagesUl = document.getElementById("messages");
-const usersUl = document.getElementById("users");
-
 const user = localStorage.getItem("user");
 if (!user) {
   window.location.href = "/";
 }
 
-// подключение WebSocket
-ws = new WebSocket(`wss://${window.location.host}`);
+const messagesUl = document.getElementById("messages");
+const usersUl = document.getElementById("users");
+
+ws = new WebSocket(`ws://${window.location.host}`);
 
 ws.onopen = () => {
   ws.send(JSON.stringify({ type: "join", user }));
@@ -43,7 +42,6 @@ function addMessage(msg) {
   messagesUl.scrollTop = messagesUl.scrollHeight;
 }
 
-// форма отправки
 document.getElementById("chatForm").addEventListener("submit", (e) => {
   e.preventDefault();
   const input = document.getElementById("message");
@@ -58,7 +56,6 @@ document.getElementById("chatForm").addEventListener("submit", (e) => {
   }
 });
 
-// logout
 document.getElementById("logoutBtn").onclick = () => {
   localStorage.removeItem("user");
   ws.close();
