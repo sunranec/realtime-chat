@@ -1,200 +1,115 @@
-/* Общий фон */
 body {
   margin: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: #e5ddd5; /* фон WhatsApp */
+  font-family: Arial, sans-serif;
+  background: #ece5dd;
+}
+
+.auth-box {
+  max-width: 300px;
+  margin: 100px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.chat-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
   height: 100vh;
 }
 
-/* Контейнер */
-.chat-container {
-  display: flex;
-  width: 90%;
-  max-width: 1200px;
-  height: 90vh;
-  background: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-/* Левая панель с юзерами */
-.users {
-  width: 25%;
-  background: #f0f2f5;
-  border-right: 1px solid #ddd;
-  display: flex;
-  flex-direction: column;
-}
-
-.users h3 {
-  margin: 0;
-  padding: 15px;
+.sidebar {
+  width: 220px;
   background: #075e54;
-  color: #fff;
-  font-size: 18px;
+  color: white;
+  padding: 15px;
 }
 
-#userList {
+.sidebar h3 {
+  margin-top: 0;
+}
+
+.sidebar ul {
   list-style: none;
-  margin: 0;
-  padding: 10px;
-  flex: 1;
-  overflow-y: auto;
+  padding: 0;
 }
 
-#userList li {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
+.sidebar li {
+  padding: 5px;
+  cursor: pointer;
 }
 
-/* Правая часть: чат */
-.chat {
+.chat-box {
   flex: 1;
   display: flex;
   flex-direction: column;
+  background: #fff;
 }
 
-.chat h2 {
-  margin: 0;
-  padding: 15px;
-  background: #075e54;
-  color: #fff;
-  font-size: 18px;
-}
-
-/* Сообщения */
 .messages {
   flex: 1;
   padding: 15px;
   overflow-y: auto;
-  background: #ece5dd;
-  display: flex;
-  flex-direction: column;
 }
 
 .message {
-  max-width: 60%;
-  margin: 5px 0;
-  padding: 10px;
-  border-radius: 8px;
-  position: relative;
-  word-wrap: break-word;
-  background: #fff;
-  align-self: flex-start;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #dcf8c6;
+  max-width: 70%;
 }
 
 .message.me {
-  background: #dcf8c6;
+  background: #ece5dd;
   align-self: flex-end;
 }
 
 .msg-user {
   font-weight: bold;
-  display: block;
-  margin-bottom: 2px;
 }
 
 .msg-time {
-  font-size: 11px;
-  color: #666;
-  margin-top: 3px;
-  display: block;
-  text-align: right;
+  font-size: 0.8em;
+  color: gray;
+  margin-left: 10px;
 }
 
-/* Форма */
-#chatForm {
+form {
   display: flex;
   padding: 10px;
   background: #f0f0f0;
-  border-top: 1px solid #ccc;
 }
 
-#chatForm input {
+form input {
   flex: 1;
   padding: 10px;
-  border: none;
   border-radius: 20px;
-  margin-right: 10px;
-  outline: none;
-}
-
-#chatForm button {
-  padding: 10px 15px;
-  background: #075e54;
-  border: none;
-  border-radius: 50%;
-  color: #fff;
-  cursor: pointer;
-}
-
-#chatForm button:hover {
-  background: #0a7c6d;
-}
-
-/* Эмодзи */
-.emoji-picker {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 10px;
-  background: #fff;
-  border: 1px solid #ddd;
-  position: absolute;
-  bottom: 60px;
-  left: 30%;
-  width: 250px;
-  border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.emoji-picker span {
-  cursor: pointer;
-  font-size: 22px;
-  margin: 5px;
-}
-
-.emoji-picker span:hover {
-  transform: scale(1.2);
-}
-
-/* Авторизация */
-.auth-box {
-  background: #fff;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  width: 350px;
-  text-align: center;
-}
-
-.auth-box h2 {
-  margin-bottom: 20px;
-}
-
-.auth-box input {
-  display: block;
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
   border: 1px solid #ccc;
-  border-radius: 6px;
 }
 
-.auth-box button {
-  width: 100%;
-  padding: 12px;
-  background: #075e54;
-  color: #fff;
+form button {
+  margin-left: 5px;
   border: none;
-  border-radius: 6px;
-  margin-top: 10px;
+  background: #075e54;
+  color: white;
+  border-radius: 20px;
+  padding: 0 15px;
   cursor: pointer;
 }
 
-.auth-box button:hover {
-  background: #0a7c6d;
+.emoji-panel {
+  display: none;
+  flex-wrap: wrap;
+  background: white;
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.emoji-panel span {
+  font-size: 20px;
+  margin: 5px;
+  cursor: pointer;
 }
