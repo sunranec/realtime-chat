@@ -1,162 +1,200 @@
+/* Общий фон */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #ece5dd;
-}
-
-.chat-wrapper {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #e5ddd5; /* фон WhatsApp */
   display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100vh;
 }
 
-.sidebar {
-  width: 250px;
-  background: #075e54;
-  color: white;
-  padding: 15px;
-}
-
-.sidebar h3 {
-  margin-top: 0;
-}
-
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar li {
-  padding: 5px;
-  border-bottom: 1px solid #0b7767;
-}
-
+/* Контейнер */
 .chat-container {
+  display: flex;
+  width: 90%;
+  max-width: 1200px;
+  height: 90vh;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Левая панель с юзерами */
+.users {
+  width: 25%;
+  background: #f0f2f5;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+}
+
+.users h3 {
+  margin: 0;
+  padding: 15px;
+  background: #075e54;
+  color: #fff;
+  font-size: 18px;
+}
+
+#userList {
+  list-style: none;
+  margin: 0;
+  padding: 10px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+#userList li {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Правая часть: чат */
+.chat {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: #fff;
 }
 
+.chat h2 {
+  margin: 0;
+  padding: 15px;
+  background: #075e54;
+  color: #fff;
+  font-size: 18px;
+}
+
+/* Сообщения */
 .messages {
   flex: 1;
   padding: 15px;
   overflow-y: auto;
-  background: #efeae2;
+  background: #ece5dd;
+  display: flex;
+  flex-direction: column;
 }
 
 .message {
-  margin: 10px 0;
   max-width: 60%;
-  padding: 8px;
+  margin: 5px 0;
+  padding: 10px;
   border-radius: 8px;
-  background: #fff;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
   position: relative;
+  word-wrap: break-word;
+  background: #fff;
+  align-self: flex-start;
 }
 
 .message.me {
-  margin-left: auto;
   background: #dcf8c6;
+  align-self: flex-end;
 }
 
 .msg-user {
   font-weight: bold;
   display: block;
-}
-
-.msg-text {
-  display: block;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .msg-time {
-  font-size: 0.75em;
-  color: gray;
+  font-size: 11px;
+  color: #666;
+  margin-top: 3px;
   display: block;
   text-align: right;
 }
 
-.chat-input {
+/* Форма */
+#chatForm {
   display: flex;
-  align-items: center;
   padding: 10px;
   background: #f0f0f0;
-  position: relative;
+  border-top: 1px solid #ccc;
 }
 
-.chat-input textarea {
+#chatForm input {
   flex: 1;
-  resize: none;
-  padding: 8px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-.send-btn {
-  margin-left: 10px;
-  background: #075e54;
-  color: white;
+  padding: 10px;
   border: none;
-  padding: 10px 15px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.emoji-btn {
+  border-radius: 20px;
   margin-right: 10px;
-  font-size: 20px;
-  background: transparent;
+  outline: none;
+}
+
+#chatForm button {
+  padding: 10px 15px;
+  background: #075e54;
   border: none;
+  border-radius: 50%;
+  color: #fff;
   cursor: pointer;
 }
 
+#chatForm button:hover {
+  background: #0a7c6d;
+}
+
+/* Эмодзи */
 .emoji-picker {
-  display: none;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid #ddd;
   position: absolute;
   bottom: 60px;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  padding: 8px;
+  left: 30%;
   width: 250px;
-  max-height: 150px;
-  overflow-y: auto;
-  font-size: 20px;
-  line-height: 1.5;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* ЛОГИН */
+.emoji-picker span {
+  cursor: pointer;
+  font-size: 22px;
+  margin: 5px;
+}
+
+.emoji-picker span:hover {
+  transform: scale(1.2);
+}
+
+/* Авторизация */
 .auth-box {
-  background: #ffffff;
+  background: #fff;
+  padding: 30px;
   border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  width: 300px;
-  margin: 100px auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  width: 350px;
   text-align: center;
 }
 
+.auth-box h2 {
+  margin-bottom: 20px;
+}
+
 .auth-box input {
+  display: block;
   width: 100%;
-  padding: 10px;
-  margin: 8px 0;
+  padding: 12px;
+  margin: 10px 0;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 6px;
 }
 
 .auth-box button {
   width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border: none;
-  border-radius: 5px;
+  padding: 12px;
   background: #075e54;
-  color: white;
-  font-weight: bold;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  margin-top: 10px;
   cursor: pointer;
 }
 
 .auth-box button:hover {
-  background: #0b7767;
+  background: #0a7c6d;
 }
