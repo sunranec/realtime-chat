@@ -1,22 +1,59 @@
 let ws;
-let currentUser = localStorage.getItem("user");
+let currentUser = null;
 
-// Выход
+// ===== ЛОГИН =====
+async function login() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  const res = await fetch("/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password }),
+  });
+
+  const data = await res.json();
+  if (data.success) {
+    localStorage.setItem("user", username);
+    window.location.href = "/chat.html";
+  } else {
+    document.getElementById("authMsg").innerText = data.error || "Login failed";
+  }
+}
+
+async function register() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  const res = await fetch("/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password }),
+  });
+
+  const data = await res.json();
+  if (data.success) {
+    alert("✅ Registration successful, now login!");
+  } else {
+    document.getElementById("authMsg").innerText = data.error || "Registration failed";
+  }
+}
+
+// ===== ЛОГАУТ =====
 function logout() {
   localStorage.removeItem("user");
-  currentUser = null;
   window.location.href = "/";
 }
 
-// Запуск чата
+// ===== ЧАТ =====
 function startChat() {
+  currentUser = localStorage.getItem("user");
   if (!currentUser) {
     window.location.href = "/";
     return;
   }
 
-  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-  ws = new WebSocket(`${protocol}://${window.location.host}`);
+  ws = new WebSocket(`wss://${window.location.host}`);
 
   ws.onopen = () => {
     ws.send(JSON.stringify({ type: "join", user: currentUser }));
@@ -26,7 +63,7 @@ function startChat() {
     const data = JSON.parse(event.data);
 
     if (data.type === "history") {
-      data.messages.forEach(m => addMessage(m.username, m.text, m.created_at));
+      data.messages.forEach((m) => addMessage(m.user, m.text, m.time));
     }
 
     if (data.type === "message") {
@@ -34,110 +71,68 @@ function startChat() {
     }
 
     if (data.type === "users") {
-      updateUserList(data.list);
+      updateUsers(data.users);
     }
   };
 
-  const form = document.getElementById("chatForm");
-  const input = document.getElementById("message");
-
-  form.addEventListener("submit", (e) => {
+  document.getElementById("chatForm").addEventListener("submit", (e) => {
     e.preventDefault();
-    sendMessage();
-  });
-
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  });
-
-  function sendMessage() {
+    const input = document.getElementById("message");
     if (input.value.trim() !== "") {
-      ws.send(JSON.stringify({ type: "message", user: currentUser, text: input.value }));
+      const msg = {
+        type: "message",
+        user: currentUser,
+        text: input.value,
+        time:
+          new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) +
+          " " +
+          new Date().toLocaleDateString(),
+      };
+      ws.send(JSON.stringify(msg));
       input.value = "";
     }
-  }
+  });
+
+  // ===== ЭМОДЗИ =====
+  document.getElementById("emojiBtn")?.addEventListener("click", () => {
+    const picker = document.getElementById("emojiPicker");
+    picker.style.display = picker.style.display === "block" ? "none" : "block";
+  });
+
+  document.querySelectorAll(".emoji-picker span").forEach((el) => {
+    el.addEventListener("click", () => {
+      const input = document.getElementById("message");
+      input.value += el.innerText;
+      input.focus();
+    });
+  });
 }
 
-// Добавить сообщение
+// ===== ДОБАВЛЕНИЕ СООБЩЕНИЙ =====
 function addMessage(user, text, time) {
   const messages = document.getElementById("messages");
-  if (!messages) return;
 
-  const msgDiv = document.createElement("div");
-  msgDiv.classList.add("message");
-  msgDiv.classList.add(user === currentUser ? "me" : "other");
+  const div = document.createElement("div");
+  div.classList.add("message");
+  if (user === currentUser) div.classList.add("me");
 
-  const userSpan = document.createElement("span");
-  userSpan.className = "msg-user";
-  userSpan.innerText = user;
+  div.innerHTML = `
+    <span class="msg-user">${user}</span>
+    <span class="msg-text">${text}</span>
+    <span class="msg-time">${time}</span>
+  `;
 
-  const textSpan = document.createElement("span");
-  textSpan.className = "msg-text";
-  textSpan.innerText = text;
-
-  const timeSpan = document.createElement("span");
-  timeSpan.className = "msg-time";
-  timeSpan.innerText = formatTime(time);
-
-  msgDiv.appendChild(userSpan);
-  msgDiv.appendChild(textSpan);
-  msgDiv.appendChild(timeSpan);
-
-  messages.appendChild(msgDiv);
+  messages.appendChild(div);
   messages.scrollTop = messages.scrollHeight;
 }
 
-function formatTime(time) {
-  if (!time) return "";
-  const d = new Date(time);
-  return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) +
-         " " +
-         d.toLocaleDateString();
-}
-
-// Обновить список юзеров
-function updateUserList(users) {
-  const ul = document.getElementById("userList");
-  if (!ul) return;
-  ul.innerHTML = "";
-  users.forEach(u => {
+// ===== ОБНОВЛЕНИЕ СПИСКА ЮЗЕРОВ =====
+function updateUsers(users) {
+  const list = document.getElementById("userList");
+  list.innerHTML = "";
+  users.forEach((u) => {
     const li = document.createElement("li");
-    li.className = "user-online";
-    li.innerText = u;
-    ul.appendChild(li);
+    li.textContent = u;
+    list.appendChild(li);
   });
-}
-
-// Работа со смайлами
-function toggleEmojiPicker() {
-  const picker = document.getElementById("emojiPicker");
-  picker.style.display = picker.style.display === "block" ? "none" : "block";
-}
-
-document.addEventListener("click", (event) => {
-  const picker = document.getElementById("emojiPicker");
-  const button = document.querySelector(".emoji-btn");
-  if (picker && picker.style.display === "block" && !picker.contains(event.target) && !button.contains(event.target)) {
-    picker.style.display = "none";
-  }
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  const picker = document.getElementById("emojiPicker");
-  if (picker) {
-    picker.querySelectorAll("span, div").forEach(el => {
-      el.addEventListener("click", () => {
-        const input = document.getElementById("message");
-        input.value += el.textContent;
-        input.focus();
-      });
-    });
-  }
-});
-
-if (window.location.pathname.endsWith("chat.html")) {
-  window.onload = startChat;
 }
