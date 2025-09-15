@@ -5,15 +5,53 @@
   <title>Login - Chat</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <div class="container auth-box">
+<body class="login-body">
+  <div class="auth-box">
     <h2>Realtime Chat</h2>
-    <input id="username" placeholder="Username" />
-    <input id="password" type="password" placeholder="Password" />
-    <button id="loginBtn">Login</button>
-    <button id="registerBtn">Register</button>
-    <p id="authMsg" class="error"></p>
+    <input id="username" placeholder="Username">
+    <input id="password" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <button onclick="register()">Register</button>
+    <p id="authMsg" style="color:red;"></p>
   </div>
-  <script src="script.js"></script>
+
+  <script>
+    async function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      const res = await fetch("/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        localStorage.setItem("user", username);
+        window.location.href = "/chat.html";
+      } else {
+        document.getElementById("authMsg").innerText = data.error || "Login failed";
+      }
+    }
+
+    async function register() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      const res = await fetch("/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert("✅ Registered! Now login.");
+      } else {
+        document.getElementById("authMsg").innerText = data.error || "Registration failed";
+      }
+    }
+  </script>
 </body>
 </html>
