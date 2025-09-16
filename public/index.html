@@ -2,56 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Login - Chat</title>
+  <title>Login / Register</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="login-page">
+<body class="login-body">
   <div class="login-box">
-    <h2>WhatsApp Clone</h2>
-    <input id="username" placeholder="Username" />
-    <input id="password" type="password" placeholder="Password" />
+    <h2>WhatsApp Chat</h2>
+    <input id="username" placeholder="Username">
+    <input id="password" type="password" placeholder="Password">
     <button onclick="login()">Login</button>
     <button onclick="register()">Register</button>
     <p id="authMsg"></p>
   </div>
-
-  <script>
-    async function login() {
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value.trim();
-
-      const res = await fetch("/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        localStorage.setItem("user", username);
-        window.location.href = "/chat.html";
-      } else {
-        document.getElementById("authMsg").innerText = data.error;
-      }
-    }
-
-    async function register() {
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value.trim();
-
-      const res = await fetch("/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        alert("✅ Registered! Now login.");
-      } else {
-        document.getElementById("authMsg").innerText = data.error;
-      }
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
