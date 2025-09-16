@@ -2,29 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>WhatsApp Chat</title>
+  <title>Chat</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="chat-container">
+    <!-- Users -->
     <div id="userList">
-      <h3>Online Users</h3>
+      <h3>Online</h3>
       <ul id="users"></ul>
       <button id="logoutBtn">Logout</button>
     </div>
 
+    <!-- Chat -->
     <div id="chatBox">
       <ul id="messages"></ul>
-      <div class="chat-tools">
-        <input type="file" id="fileInput" hidden>
-        <button onclick="document.getElementById('fileInput').click()">📷</button>
-        <button onclick="toggleEmoji()">😊</button>
+      <div class="chat-controls">
+        <input id="message" placeholder="Type a message..." />
+        <button id="emojiBtn">😊</button>
+        <input type="file" id="imageInput" accept="image/*" hidden>
+        <button onclick="document.getElementById('imageInput').click()">📷</button>
+        <button id="sendBtn">Send</button>
       </div>
-      <form id="chatForm">
-        <input id="message" placeholder="Type a message..." autocomplete="off">
-        <button>Send</button>
-      </form>
       <div id="emojiPicker" class="emoji-picker"></div>
+    </div>
+
+    <!-- Call UI -->
+    <div id="callUI" class="call-ui hidden">
+      <video id="remoteVideo" autoplay></video>
+      <video id="localVideo" autoplay muted></video>
+      <button id="endCallBtn">End Call</button>
     </div>
   </div>
 
