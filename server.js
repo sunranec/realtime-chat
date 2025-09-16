@@ -11,10 +11,10 @@ const wss = new WebSocket.Server({ server });
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-let users = {}; // {username: ws}
-let messages = [];
+let users = {};       // {username: ws}
+let messages = [];    // история сообщений
 
-// ===== API =====
+// ==== Регистрация / логин (упрощённо) ====
 app.post("/register", (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) return res.json({ success: false, error: "Fill all fields" });
@@ -27,7 +27,7 @@ app.post("/login", (req, res) => {
   return res.json({ success: true });
 });
 
-// ===== WebSocket =====
+// ==== WebSocket ====
 wss.on("connection", (ws) => {
   let currentUser = null;
 
@@ -39,11 +39,15 @@ wss.on("connection", (ws) => {
         currentUser = data.user;
         users[currentUser] = ws;
 
-        const systemMsg = { user: "System", text: `✅ ${currentUser} joined the chat`, time: new Date().toLocaleTimeString() };
-        messages.push(systemMsg);
-        broadcast({ type: "message", ...systemMsg });
+        // уведомление о входе
+        const joinMsg = { type: "system", text: `👋 ${currentUser} joined the chat` };
+        messages.push(joinMsg);
+        broadcast(joinMsg);
 
+        // список юзеров
         broadcast({ type: "users", users: Object.keys(users) });
+
+        // история сообщений
         ws.send(JSON.stringify({ type: "history", messages }));
       }
 
@@ -53,24 +57,13 @@ wss.on("connection", (ws) => {
         broadcast({ type: "message", ...newMsg });
       }
 
-      if (data.type === "image") {
-        const newMsg = { user: data.user, image: data.image, time: data.time };
-        messages.push(newMsg);
-        broadcast({ type: "image", ...newMsg });
-      }
-
-      // 📞 WebRTC signaling
-      if (data.type === "signal" && data.to) {
+      if (data.type === "signal") {
         if (users[data.to]) {
-          users[data.to].send(JSON.stringify({
-            type: "signal",
-            from: currentUser,
-            signal: data.signal
-          }));
+          users[data.to].send(JSON.stringify({ type: "signal", from: currentUser, signal: data.signal }));
         }
       }
     } catch (e) {
-      console.error("❌ Error:", e);
+      console.error("❌ Ошибка:", e);
     }
   });
 
@@ -78,6 +71,7 @@ wss.on("connection", (ws) => {
     if (currentUser) {
       delete users[currentUser];
       broadcast({ type: "users", users: Object.keys(users) });
+      broadcast({ type: "system", text: `❌ ${currentUser} left the chat` });
     }
   });
 });
