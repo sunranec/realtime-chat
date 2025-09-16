@@ -2,49 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Realtime Chat</title>
+  <title>WhatsApp Chat</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="chat-container">
-    
-    <!-- Список юзеров -->
     <div id="userList">
-      <h3>Online Users</h3>
+      <h3>Online</h3>
       <ul id="users"></ul>
       <button id="logoutBtn">Logout</button>
     </div>
 
-    <!-- Чат -->
     <div id="chatBox">
       <ul id="messages"></ul>
-
       <div class="chat-controls">
-        <input id="message" placeholder="Type a message..." />
+        <input id="message" placeholder="Type a message...">
         <input type="file" id="imageInput" accept="image/*" hidden>
         <button id="emojiBtn">😊</button>
         <button onclick="document.getElementById('imageInput').click()">📷</button>
         <button id="sendBtn">➤</button>
       </div>
-
-      <!-- Панель звонков -->
-      <div class="call-buttons">
-        <button id="audioCallBtn">📞 Audio</button>
-        <button id="videoCallBtn">🎥 Video</button>
-      </div>
     </div>
   </div>
 
-  <!-- Панель выбора эмодзи -->
   <div id="emojiPicker" class="emoji-picker hidden"></div>
-
-  <!-- UI звонков -->
-  <div id="callUI" class="call-ui hidden">
-    <video id="localVideo" autoplay playsinline muted></video>
-    <video id="remoteVideo" autoplay playsinline></video>
-    <button id="endCallBtn">End Call</button>
-  </div>
-
   <script src="script.js"></script>
 </body>
 </html>
