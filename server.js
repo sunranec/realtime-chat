@@ -54,6 +54,23 @@ wss.on("connection", (ws) => {
         messages.push(newMsg);
         broadcast({ type: "message", ...newMsg });
       }
+
+      if (data.type === "image") {
+        const newMsg = {
+          user: data.user,
+          image: data.image, // base64 картинка
+          time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        };
+        messages.push(newMsg);
+        broadcast({ type: "image", ...newMsg });
+      }
+
+      if (data.type === "clear") {
+        messages = []; // очищаем историю
+        broadcast({ type: "clear" });
+        broadcast({ type: "system", text: "🗑 Чат был очищен администратором" });
+      }
+
     } catch (e) {
       console.error("❌ Error:", e);
     }
