@@ -1,7 +1,6 @@
 let ws;
 let currentUser = null;
 
-// подключение к WebSocket
 function connectWS() {
   ws = new WebSocket(`wss://${window.location.host}`);
 
@@ -12,87 +11,54 @@ function connectWS() {
   ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
 
-    if (data.type === "history") {
-      data.messages.forEach(addMessage);
-    }
-
-    if (data.type === "message") {
-      addMessage(data);
-    }
-
-    if (data.type === "system") {
-      addSystemMessage(data.text);
-    }
-
-    if (data.type === "users") {
-      updateUserList(data.users);
-    }
-  };
-
-  ws.onclose = () => {
-    console.log("🔌 WebSocket закрыт");
+    if (data.type === "history") data.messages.forEach(addMessage);
+    if (data.type === "message") addMessage(data);
+    if (data.type === "system") addSystemMessage(data.text);
+    if (data.type === "users") updateUserList(data.users);
   };
 }
 
-// добавление сообщений
 function addMessage(msg) {
-  const messages = document.getElementById("messages");
   const li = document.createElement("li");
   li.className = msg.user === currentUser ? "self" : "other";
-
-  li.innerHTML = `
-    <strong>${msg.user}</strong>: ${msg.text}
-    <span class="time">${msg.time}</span>
-  `;
-
-  messages.appendChild(li);
-  messages.scrollTop = messages.scrollHeight;
+  li.innerHTML = `<strong>${msg.user}</strong>: ${msg.text}
+                  <span class="time">${msg.time}</span>`;
+  document.getElementById("messages").appendChild(li);
 }
 
-// добавление системных сообщений
 function addSystemMessage(text) {
-  const messages = document.getElementById("messages");
   const li = document.createElement("li");
   li.className = "system";
   li.innerHTML = `<em>${text}</em>`;
-  messages.appendChild(li);
-  messages.scrollTop = messages.scrollHeight;
+  document.getElementById("messages").appendChild(li);
 }
 
-// обновляем список пользователей
 function updateUserList(users) {
   const list = document.getElementById("users");
   list.innerHTML = "";
-  users.forEach((u) => {
+  users.forEach(u => {
     const li = document.createElement("li");
     li.textContent = u;
-    li.onclick = () => {
-      if (u === currentUser) {
-        logout();
-      }
-    };
+    if (u === currentUser) li.onclick = logout;
     list.appendChild(li);
   });
 }
 
-// отправка сообщений
 document.getElementById("chatForm")?.addEventListener("submit", (e) => {
   e.preventDefault();
   const input = document.getElementById("message");
   if (input.value.trim() !== "") {
-    const msg = {
+    ws.send(JSON.stringify({
       type: "message",
       user: currentUser,
       text: input.value,
-      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-    };
-    ws.send(JSON.stringify(msg));
+      time: new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})
+    }));
     input.value = "";
   }
 });
 
-// эмодзи
-document.querySelectorAll(".emoji-picker span")?.forEach((emoji) => {
+document.querySelectorAll(".emoji-picker span")?.forEach(emoji => {
   emoji.addEventListener("click", () => {
     const input = document.getElementById("message");
     input.value += emoji.textContent;
@@ -100,13 +66,11 @@ document.querySelectorAll(".emoji-picker span")?.forEach((emoji) => {
   });
 });
 
-// logout
 function logout() {
   localStorage.removeItem("user");
   window.location.href = "/";
 }
 
-// при загрузке страницы
 window.onload = () => {
   const user = localStorage.getItem("user");
   if (user) {
