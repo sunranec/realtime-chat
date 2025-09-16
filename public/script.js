@@ -1,10 +1,10 @@
 let ws;
-let currentUser = localStorage.getItem("user");
-let pc; // WebRTC PeerConnection
+let currentUser = null;
 
-// WebSocket подключение
-function initSocket() {
+// подключение к WebSocket
+function connectWS() {
   ws = new WebSocket(`wss://${window.location.host}`);
+
   ws.onopen = () => {
     ws.send(JSON.stringify({ type: "join", user: currentUser }));
   };
@@ -20,141 +20,101 @@ function initSocket() {
       addMessage(data);
     }
 
-    if (data.type === "image") {
-      addMessage(data);
+    if (data.type === "system") {
+      addSystemMessage(data.text);
     }
 
     if (data.type === "users") {
-      updateUsers(data.users);
+      updateUserList(data.users);
     }
+  };
 
-    if (data.type === "signal") {
-      handleSignal(data);
-    }
+  ws.onclose = () => {
+    console.log("🔌 WebSocket закрыт");
   };
 }
 
-// Обновление списка пользователей
-function updateUsers(users) {
-  const ul = document.getElementById("users");
-  ul.innerHTML = "";
-  users.forEach(u => {
-    if (u !== currentUser) {
-      const li = document.createElement("li");
-      li.textContent = u;
-      li.onclick = () => startCall(u);
-      ul.appendChild(li);
-    }
+// добавление сообщений
+function addMessage(msg) {
+  const messages = document.getElementById("messages");
+  const li = document.createElement("li");
+  li.className = msg.user === currentUser ? "self" : "other";
+
+  li.innerHTML = `
+    <strong>${msg.user}</strong>: ${msg.text}
+    <span class="time">${msg.time}</span>
+  `;
+
+  messages.appendChild(li);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+// добавление системных сообщений
+function addSystemMessage(text) {
+  const messages = document.getElementById("messages");
+  const li = document.createElement("li");
+  li.className = "system";
+  li.innerHTML = `<em>${text}</em>`;
+  messages.appendChild(li);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+// обновляем список пользователей
+function updateUserList(users) {
+  const list = document.getElementById("users");
+  list.innerHTML = "";
+  users.forEach((u) => {
+    const li = document.createElement("li");
+    li.textContent = u;
+    li.onclick = () => {
+      if (u === currentUser) {
+        logout();
+      }
+    };
+    list.appendChild(li);
   });
 }
 
-// Добавление сообщений
-function addMessage(msg) {
-  const li = document.createElement("li");
-  li.className = msg.user === currentUser ? "self" : "other";
-  if (msg.text) li.textContent = `${msg.user}: ${msg.text} (${msg.time})`;
-  if (msg.image) {
-    const img = document.createElement("img");
-    img.src = msg.image;
-    img.style.maxWidth = "150px";
-    li.appendChild(img);
-  }
-  document.getElementById("messages").appendChild(li);
-}
-
-// Отправка текста
-document.getElementById("sendBtn").onclick = () => {
+// отправка сообщений
+document.getElementById("chatForm")?.addEventListener("submit", (e) => {
+  e.preventDefault();
   const input = document.getElementById("message");
   if (input.value.trim() !== "") {
-    const msg = { type: "message", user: currentUser, text: input.value, time: new Date().toLocaleTimeString() };
+    const msg = {
+      type: "message",
+      user: currentUser,
+      text: input.value,
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    };
     ws.send(JSON.stringify(msg));
     input.value = "";
   }
-};
-
-// Отправка изображения
-document.getElementById("imageInput").addEventListener("change", function () {
-  const file = this.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    const msg = { type: "image", user: currentUser, image: reader.result, time: new Date().toLocaleTimeString() };
-    ws.send(JSON.stringify(msg));
-  };
-  reader.readAsDataURL(file);
 });
 
-// 📞 WebRTC
-async function startCall(targetUser) {
-  pc = new RTCPeerConnection({ iceServers: [{ urls: "stun:stun.l.google.com:19302" }] });
+// эмодзи
+document.querySelectorAll(".emoji-picker span")?.forEach((emoji) => {
+  emoji.addEventListener("click", () => {
+    const input = document.getElementById("message");
+    input.value += emoji.textContent;
+    input.focus();
+  });
+});
 
-  pc.onicecandidate = (event) => {
-    if (event.candidate) {
-      ws.send(JSON.stringify({ type: "signal", to: targetUser, signal: { candidate: event.candidate } }));
-    }
-  };
-
-  pc.ontrack = (event) => {
-    document.getElementById("remoteVideo").srcObject = event.streams[0];
-  };
-
-  const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-  document.getElementById("localVideo").srcObject = stream;
-  stream.getTracks().forEach(track => pc.addTrack(track, stream));
-
-  const offer = await pc.createOffer();
-  await pc.setLocalDescription(offer);
-
-  ws.send(JSON.stringify({ type: "signal", to: targetUser, signal: { sdp: pc.localDescription } }));
-
-  document.getElementById("callBtn").classList.add("hidden");
-  document.getElementById("endCallBtn").classList.remove("hidden");
+// logout
+function logout() {
+  localStorage.removeItem("user");
+  window.location.href = "/";
 }
 
-async function handleSignal(data) {
-  if (!pc) {
-    pc = new RTCPeerConnection({ iceServers: [{ urls: "stun:stun.l.google.com:19302" }] });
-
-    pc.onicecandidate = (event) => {
-      if (event.candidate) {
-        ws.send(JSON.stringify({ type: "signal", to: data.from, signal: { candidate: event.candidate } }));
-      }
-    };
-
-    pc.ontrack = (event) => {
-      document.getElementById("remoteVideo").srcObject = event.streams[0];
-    };
-
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    document.getElementById("localVideo").srcObject = stream;
-    stream.getTracks().forEach(track => pc.addTrack(track, stream));
-  }
-
-  if (data.signal.sdp) {
-    await pc.setRemoteDescription(new RTCSessionDescription(data.signal.sdp));
-    if (data.signal.sdp.type === "offer") {
-      const answer = await pc.createAnswer();
-      await pc.setLocalDescription(answer);
-      ws.send(JSON.stringify({ type: "signal", to: data.from, signal: { sdp: pc.localDescription } }));
+// при загрузке страницы
+window.onload = () => {
+  const user = localStorage.getItem("user");
+  if (user) {
+    currentUser = user;
+    connectWS();
+  } else {
+    if (!window.location.pathname.includes("index.html")) {
+      window.location.href = "/";
     }
   }
-
-  if (data.signal.candidate) {
-    await pc.addIceCandidate(new RTCIceCandidate(data.signal.candidate));
-  }
-}
-
-// Завершение звонка
-document.getElementById("endCallBtn").onclick = () => {
-  if (pc) {
-    pc.close();
-    pc = null;
-  }
-  document.getElementById("localVideo").srcObject = null;
-  document.getElementById("remoteVideo").srcObject = null;
-  document.getElementById("endCallBtn").classList.add("hidden");
-  document.getElementById("callBtn").classList.remove("hidden");
 };
-
-// Запуск
-initSocket();
