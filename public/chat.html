@@ -8,43 +8,23 @@
 <body>
   <div class="chat-container">
     <div id="userList">
-      <h3>Online Users</h3>
+      <h3>Online</h3>
       <ul id="users"></ul>
       <button id="logoutBtn">Logout</button>
     </div>
 
     <div id="chatBox">
       <ul id="messages"></ul>
-      <div class="chat-controls">
-        <input id="message" placeholder="Type a message...">
-        <input type="file" id="imageInput" accept="image/*" hidden>
-        <button id="emojiBtn">😊</button>
-        <button onclick="document.getElementById('imageInput').click()">📷</button>
-        <button id="sendBtn">➤</button>
-      </div>
-      <div class="call-buttons">
-        <button id="audioCallBtn">📞 Audio</button>
-        <button id="videoCallBtn">🎥 Video</button>
+      <form id="chatForm">
+        <input id="message" autocomplete="off" placeholder="Type a message..." />
+        <button>Send</button>
+      </form>
+      <div class="emoji-picker">
+        <span>😀</span><span>😂</span><span>😍</span><span>👍</span><span>🔥</span>
+        <span>🙏</span><span>🎉</span><span>😎</span><span>💔</span><span>❤️</span>
       </div>
     </div>
   </div>
-
-  <!-- окно входящего звонка -->
-  <div id="incomingCall" class="hidden modal">
-    <p id="callText">📞 Incoming call...</p>
-    <button id="acceptCallBtn">✅ Accept</button>
-    <button id="rejectCallBtn">❌ Reject</button>
-  </div>
-
-  <!-- UI звонков -->
-  <div id="callUI" class="call-ui hidden">
-    <video id="localVideo" autoplay playsinline muted></video>
-    <video id="remoteVideo" autoplay playsinline></video>
-    <button id="endCallBtn">End Call</button>
-  </div>
-
-  <div id="emojiPicker" class="emoji-picker hidden"></div>
-
   <script src="script.js"></script>
 </body>
 </html>
