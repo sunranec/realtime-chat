@@ -11,8 +11,8 @@ const wss = new WebSocket.Server({ server });
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-let users = {};    // {username: ws}
-let messages = []; // история сообщений
+let users = {}; // {username: ws}
+let messages = [];
 
 // ===== API =====
 app.post("/register", (req, res) => {
@@ -39,40 +39,28 @@ wss.on("connection", (ws) => {
         currentUser = data.user;
         users[currentUser] = ws;
 
-        broadcast({ type: "users", users: Object.keys(users) });
-        broadcast({ type: "system", text: `👋 ${currentUser} вошёл в чат` });
+        // уведомление в чат
+        const systemMsg = { user: "System", text: `✅ ${currentUser} joined the chat`, time: new Date().toLocaleTimeString() };
+        messages.push(systemMsg);
+        broadcast({ type: "message", ...systemMsg });
 
+        broadcast({ type: "users", users: Object.keys(users) });
         ws.send(JSON.stringify({ type: "history", messages }));
       }
 
       if (data.type === "message") {
-        const newMsg = {
-          user: data.user,
-          text: data.text,
-          time: data.time,
-        };
+        const newMsg = { user: data.user, text: data.text, time: data.time };
         messages.push(newMsg);
         broadcast({ type: "message", ...newMsg });
       }
 
       if (data.type === "image") {
-        const newMsg = {
-          user: data.user,
-          image: data.image,
-          time: data.time,
-        };
+        const newMsg = { user: data.user, image: data.image, time: data.time };
         messages.push(newMsg);
         broadcast({ type: "image", ...newMsg });
       }
-
-      // ==== WebRTC сигналы ====
-      if (["call-offer", "call-answer", "ice-candidate"].includes(data.type)) {
-        if (users[data.target]) {
-          users[data.target].send(JSON.stringify(data));
-        }
-      }
     } catch (e) {
-      console.error("Ошибка WS:", e);
+      console.error("❌ Error:", e);
     }
   });
 
@@ -80,7 +68,6 @@ wss.on("connection", (ws) => {
     if (currentUser) {
       delete users[currentUser];
       broadcast({ type: "users", users: Object.keys(users) });
-      broadcast({ type: "system", text: `❌ ${currentUser} вышел из чата` });
     }
   });
 });
@@ -93,4 +80,4 @@ function broadcast(data) {
 }
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log(`🚀 Сервер: http://localhost:${PORT}`));
+server.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
