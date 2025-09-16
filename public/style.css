@@ -19,6 +19,6 @@ body { margin:0; font-family:Arial, sans-serif; background:#ece5dd; }
 .chat-controls input { flex:1; padding:10px; border-radius:5px; border:1px solid #ccc; }
 .chat-controls button { margin-left:5px; padding:10px; }
 
-/* Emoji picker */
-.emoji-picker { position:absolute; bottom:70px; left:220px; background:white; border:1px solid #ccc; padding:5px; display:grid; grid-template-columns:repeat(8,1fr); max-width:300px; }
+/* Video */
+video { width:200px; height:150px; margin:5px; border:2px solid #128c7e; border-radius:8px; }
 .hidden { display:none; }
