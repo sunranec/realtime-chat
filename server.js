@@ -39,7 +39,6 @@ wss.on("connection", (ws) => {
         currentUser = data.user;
         users[currentUser] = ws;
 
-        // уведомление в чат
         const systemMsg = { user: "System", text: `✅ ${currentUser} joined the chat`, time: new Date().toLocaleTimeString() };
         messages.push(systemMsg);
         broadcast({ type: "message", ...systemMsg });
@@ -58,6 +57,17 @@ wss.on("connection", (ws) => {
         const newMsg = { user: data.user, image: data.image, time: data.time };
         messages.push(newMsg);
         broadcast({ type: "image", ...newMsg });
+      }
+
+      // 📞 WebRTC signaling
+      if (data.type === "signal" && data.to) {
+        if (users[data.to]) {
+          users[data.to].send(JSON.stringify({
+            type: "signal",
+            from: currentUser,
+            signal: data.signal
+          }));
+        }
       }
     } catch (e) {
       console.error("❌ Error:", e);
